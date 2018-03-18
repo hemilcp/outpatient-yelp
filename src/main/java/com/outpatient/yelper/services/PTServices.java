@@ -17,11 +17,13 @@ import org.json.simple.parser.ParseException;
 
 public class PTServices {
 
-	public String findNearbyPT(String location) throws IOException, ParseException{
+	public String findNearbyPT(String business, String location) throws IOException, ParseException{
 	
 		//  Create a baseURL from the input location
 			String inputLoc = URLEncoder.encode(location, "UTF-8");
-			String businessTerm = URLEncoder.encode("Physical Therapists", "UTF-8");
+//			String businessTerm = URLEncoder.encode("Physical Therapists", "UTF-8");
+			String businessTerm = URLEncoder.encode(business, "UTF-8");
+		
 			String baseUri = "https://api.yelp.com/v3/businesses/search?term="+businessTerm+"&location="+inputLoc+"&sort_by=rating&limit=50"; 
 			
 			//&limit=50&offset=100";
@@ -42,9 +44,7 @@ public class PTServices {
 			JSONObject response = new JSONObject();
 		
 			for(int offset = 0; offset < size;){
-				System.out.println("Offset: "+offset);
-				System.out.println("size: " + size);
-				
+			
 				String newbaseUri = baseUri + "&offset=" +offset;
 				
 				String response2 =  client.
@@ -53,15 +53,12 @@ public class PTServices {
 						.header("Authorization", "Bearer "+prop.getProperty("yelpkey"))
 						.get(String.class);
 				
-				System.out.println("response executed");
 				JSONObject responseObject = new JSONObject();
-				System.out.println("parsing executed");	
 				responseObject = (JSONObject) jsonParser.parse(response2);
 				
 				size = (long) responseObject.get("total");
 				
 				JSONArray jArray = (JSONArray) responseObject.get("businesses");
-				System.out.println("businesses executed");
 
 				for(int i = 0; i < jArray.size(); i++){
 				
@@ -85,16 +82,15 @@ public class PTServices {
 			
 	}
 	
-	public Response findSummaryNearByPT(String location) throws IOException, ParseException{
+	public Response findSummaryForBusinessNearBy(String business, String location) throws IOException, ParseException{
 		
 		//  Create a baseURL from the input location
 		String inputLoc = URLEncoder.encode(location, "UTF-8");
-		String businessTerm = URLEncoder.encode("Physical Therapists", "UTF-8");
+//		String businessTerm = URLEncoder.encode("Physical Therapists", "UTF-8");
+		String businessTerm = URLEncoder.encode(business, "UTF-8");
 		String baseUri = "https://api.yelp.com/v3/businesses/search?term="+businessTerm+"&location="+inputLoc+"&sort_by=rating&limit=50"; 
 		
-		//&limit=50&offset=100";
-		//  "https://api.yelp.com/v3/businesses/search?term=Physical%20Therapists&location=San%20Jose,Ca"			
-
+	
 	//Load Yelp Key from resource
 		Properties prop = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -113,8 +109,6 @@ public class PTServices {
 		JSONObject response = new JSONObject();
 	
 		for(int offset = 0; offset < size;){
-			System.out.println("Offset: "+offset);
-			System.out.println("size: " + size);
 			
 			String newbaseUri = baseUri + "&offset=" +offset;
 			
@@ -124,9 +118,7 @@ public class PTServices {
 					.header("Authorization", "Bearer "+prop.getProperty("yelpkey"))
 					.get(String.class);
 			
-			System.out.println("response executed");
 			JSONObject responseObject = new JSONObject();
-			System.out.println("parsing executed");	
 			responseObject = (JSONObject) jsonParser.parse(response2);
 			
 			size = (long) responseObject.get("total");
@@ -135,7 +127,6 @@ public class PTServices {
 			
 			
 			JSONArray jArray = (JSONArray) responseObject.get("businesses");
-			System.out.println("businesses executed");
 
 			for(int i = 0; i < jArray.size(); i++){
 			
@@ -152,11 +143,11 @@ public class PTServices {
 			offset = offset + 50;
 		}
 		
-		response.put("Number of PT in area", numberOfPT);
-		response.put("Total PT with rating", totalPTwithRating);
+		response.put("Number of "+ business +" in area", numberOfPT);
+		response.put("Total "+ business +" with rating", totalPTwithRating);
 
 		DecimalFormat df = new DecimalFormat("#.##");      
-		response.put("Avaerage rating for PT in area", Double.valueOf(df.format((double) (averageRating / totalPTwithRating))));
+		response.put("Avaerage rating for "+ business +" in area", Double.valueOf(df.format((double) (averageRating / totalPTwithRating))));
 		response.put("Total number of reviews", totalReviews);
 		
 		return Response.ok(response.toString()).build();

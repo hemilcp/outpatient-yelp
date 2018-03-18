@@ -30,22 +30,22 @@ public class HomeController {
 	  		return Response.ok("Welcome to Outpatient APIs").build();
 	    }
 	  	
-	  	@Path("/pt/{location}")
+	  	@Path("/{business}/{location}")
 	  	@GET
-	  	public Response findPT(@PathParam(value = "location") String location) throws IOException, ParseException{
+	  	public Response findPT(@PathParam(value = "location") String location,@PathParam(value = "business") String business ) throws IOException, ParseException{
 	  		
 	  		PTServices ptServices = new PTServices();
-	  		String jsonObject = ptServices.findNearbyPT(location);
+	  		String jsonObject = ptServices.findNearbyPT(business, location);
 	  		return Response.ok(jsonObject).build();
 	  	}
 	  	
-	  	@Path("/pt/summary/{location}")
+	  	@Path("/{business}/summary/{location}")
 	  	@GET	
-	  	public Response getSummaryPT(@PathParam(value = "location") String location) throws IOException, ParseException{
+	  	public Response getSummaryPT(@PathParam(value = "location") String location, @PathParam(value = "business") String business) throws IOException, ParseException{
 	  		
 	  		PTServices ptServices = new PTServices();
   		
-	  		return ptServices.findSummaryNearByPT(location);
+	  		return ptServices.findSummaryForBusinessNearBy(business, location);
 	  		
 	  	}
 	  	
