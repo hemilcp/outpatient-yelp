@@ -36,12 +36,11 @@ public class HomeController {
 	  		
 	  		PTServices ptServices = new PTServices();
 	  		String jsonObject = ptServices.findNearbyPT(location);
-	  		System.out.println(jsonObject.length());
 	  		return Response.ok(jsonObject).build();
 	  	}
 	  	
 	  	@Path("/pt/summary/{location}")
-	  	@GET
+	  	@GET	
 	  	public Response getSummaryPT(@PathParam(value = "location") String location) throws IOException, ParseException{
 	  		
 	  		PTServices ptServices = new PTServices();
