@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.json.simple.parser.ParseException;
+
 import com.outpatient.yelper.services.PTServices;
 
 /**
@@ -30,18 +32,21 @@ public class HomeController {
 	  	
 	  	@Path("/pt/{location}")
 	  	@GET
-	  	public Response findPT(@PathParam(value = "location") String location) throws IOException{
+	  	public Response findPT(@PathParam(value = "location") String location) throws IOException, ParseException{
 	  		
 	  		PTServices ptServices = new PTServices();
 	  		String jsonObject = ptServices.findNearbyPT(location);
+	  		System.out.println(jsonObject.length());
 	  		return Response.ok(jsonObject).build();
 	  	}
 	  	
 	  	@Path("/pt/summary/{location}")
 	  	@GET
-	  	public Response getSummaryPT(@PathParam(value = "location") String location) throws IOException{
+	  	public Response getSummaryPT(@PathParam(value = "location") String location) throws IOException, ParseException{
 	  		
-	  		return null;
+	  		PTServices ptServices = new PTServices();
+  		
+	  		return ptServices.findSummaryNearByPT(location);
 	  		
 	  	}
 	  	
